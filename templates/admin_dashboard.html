@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">🛠️ Admin Dashboard</h1>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="mb-4">
+        {% for category, message in messages %}
+          <li class="text-{{ 'green' if category == 'success' else 'red' }}-600">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Chart: Properties Per Owner -->
+  <div class="bg-white rounded shadow p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-4">📊 Properties Per Owner</h2>
+    <canvas id="ownerChart" width="400" height="150"></canvas>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <!-- Users -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">👤 Registered Users</h2>
+      <ul class="divide-y divide-gray-200 max-h-64 overflow-y-auto">
+        {% for user in users %}
+          <li class="py-2">
+            <p><strong>{{ user.username }}</strong> - {{ user.email }}
+              <span class="text-sm text-gray-500">({{ user.role|capitalize }})</span>
+            </p>
+          </li>
+        {% else %}
+          <li class="text-gray-500">No users found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Properties -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">🏘️ Listed Properties</h2>
+      <ul class="divide-y divide-gray-200 max-h-64 overflow-y-auto">
+        {% for prop in properties %}
+          <li class="py-2">
+            <p><strong>{{ prop.title }}</strong> - ₹{{ prop.price }}
+              <span class="text-sm text-gray-500">({{ prop.location }})</span>
+            </p>
+            <p class="text-sm text-gray-500">Owned by: {{ prop.owner.username }}</p>
+          </li>
+        {% else %}
+          <li class="text-gray-500">No properties found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Full Property Table -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-semibold mb-4">📄 All Listed Properties (Manage)</h2>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-gray-200 text-left">
+          <th class="p-2 border">Title</th>
+          <th class="p-2 border">Location</th>
+          <th class="p-2 border">Price</th>
+          <th class="p-2 border">Owner</th>
+          <th class="p-2 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for prop in properties %}
+          <tr class="hover:bg-gray-100">
+            <td class="p-2 border">{{ prop.title }}</td>
+            <td class="p-2 border">{{ prop.location }}</td>
+            <td class="p-2 border">₹{{ prop.price }}</td>
+            <td class="p-2 border">{{ prop.owner.username }}</td>
+          <td class="p-2 border">
+  <div class="flex space-x-2">
+    <!-- Edit Button -->
+    <a href="{{ url_for('edit_property', property_id=prop.id) }}"
+   class="bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded">
+  ✏️ Edit
+</a>
+
+    <!-- Delete Button -->
+    <form action="{{ url_for('delete_property', property_id=prop.id) }}" method="POST"
+          onsubmit="return confirm('Are you sure you want to delete this property?');">
+      <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded">
+        Delete
+      </button>
+    </form>
+  </div>
+</td>
+
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center p-4 text-gray-500">No properties found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="text-right mb-4">
+  <a href="{{ url_for('add_property') }}"
+     class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow">
+    ➕ Add New Property
+  </a>
+</div>
+
+{% set props = current_user.properties %}
+<div class="bg-white rounded shadow p-4">
+  {% if props %}
+    <ul class="divide-y divide-gray-200">
+      {% for prop in props %}
+        <li class="py-4">
+          <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+            <div>
+              <strong class="text-lg text-gray-800">{{ prop.title }}</strong>
+              <p class="text-sm text-gray-600">{{ prop.location }}</p>
+            </div>
+            <div class="mt-2 md:mt-0 text-green-700 font-bold">
+              ₹ {{ prop.price }}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-600">You have no properties yet.</p>
+  {% endif %}
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Chart Initialization -->
+<script>
+  const ctx = document.getElementById('ownerChart').getContext('2d');
+  const ownerChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ owner_names | tojson | safe }},
+      datasets: [{
+        label: '# of Properties',
+        data: {{ owner_counts | tojson | safe }},
+        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+        borderColor: 'rgba(59, 130, 246, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          precision: 0
+        }
+      }
+    }
+  });
+</script>
+
+
+
+{% endblock %}

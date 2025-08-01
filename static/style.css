@@ -1,0 +1,126 @@
+/* ===== GLOBAL RESET & BASE ===== */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa; /* light background */
+  color: #212529;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* ===== NAVBAR ===== */
+.navbar, .site-header {
+  background-color: #222; /* charcoal black */
+  color: #f5f5dc;         /* beige */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar a, .site-header a {
+  color: #f5f5dc !important;
+  text-decoration: none;
+}
+
+.navbar a:hover, .site-header a:hover {
+  color: #ffc107 !important; /* warm yellow on hover */
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+  background-color: #645738; /* muted beige/brown */
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #4e442e;
+}
+
+.btn-success {
+  background-color: #3e7a3e;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #356635;
+}
+
+/* ===== CARDS ===== */
+.card, .property-card {
+  border-radius: 12px;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
+}
+
+.card:hover, .property-card:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transform: scale(1.02);
+}
+
+/* ===== FORMS ===== */
+input.form-control, textarea.form-control, select.form-select {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input.form-control:focus, textarea.form-control:focus, select.form-select:focus {
+  border-color: #0c66c5;
+  box-shadow: 0 0 5px rgba(0,123,255,0.5);
+  outline: none;
+}
+
+/* ===== FLASH MESSAGES ===== */
+.alert {
+  border-radius: 6px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: 2rem;
+}
+
+/* ===== PROPERTY IMAGE PLACEHOLDER ===== */
+.property-image-placeholder {
+  background-color: #e9ecef;
+  color: #6c757d;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
+}
+
+/* ===== DASHBOARD STATS ===== */
+.dashboard-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-stat {
+  flex: 1 1 200px;
+  background-color: #fff;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .dashboard-stats {
+    flex-direction: column;
+  }
+  .property-card {
+    margin-bottom: 1rem;
+  }
+}

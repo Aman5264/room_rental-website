@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}My Wishlist{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">❤️ My Wishlist</h1>
+
+  {% if wishlist_properties %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for room in wishlist_properties %}
+        <div class="bg-white rounded-2xl shadow-md p-5 flex flex-col justify-between">
+          {% if room.photo_filename %}
+            <img src="{{ url_for('static', filename='uploads/' ~ room.photo_filename) }}"
+                 alt="{{ room.title }}"
+                 class="w-full h-48 object-cover rounded-xl mb-4">
+          {% else %}
+            <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400 rounded-xl mb-4">
+              No Image
+            </div>
+          {% endif %}
+
+          <div>
+            <h3 class="text-xl font-semibold text-gray-800">{{ room.title }}</h3>
+            <p class="text-gray-500">{{ room.location }}</p>
+            <p class="text-gray-700 mt-2">💰 ₹{{ room.price }}</p>
+            <a href="https://www.google.com/maps/search/?api=1&query={{ room.latitude }},{{ room.longitude }}"
+               target="_blank" class="text-blue-500 hover:underline block mt-2">📍 View on Google Maps</a>
+          </div>
+
+          <div class="mt-6">
+            <a href="{{ url_for('book_property', room_id=room.id) }}"
+               class="block bg-yellow-500 text-white py-2 px-4 rounded-full text-center hover:bg-yellow-600">
+              Book Now
+            </a>
+
+            <form method="POST" action="{{ url_for('remove_from_wishlist', room_id=room.id) }}" class="mt-3 text-center">
+              <button type="submit" class="text-red-500 font-semibold hover:underline">
+                Remove ❤️
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center text-gray-500 mt-10 text-lg">
+      🥺 Your wishlist is empty.<br>
+      Start adding properties you like!
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Luxury Room Rental{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .text-beige { color: #f5f5dc; }
+    .bg-charcoal { background-color: #222; }
+  </style>
+</head>
+
+<body x-data="{ dropdownOpen: false, filterOpen: false }" class="bg-gradient-to-r from-gray-100 to-gray-300 text-gray-800 min-h-screen" x-init="console.log('Alpine ready!')">
+
+<!-- Navbar -->
+<header class="bg-charcoal text-beige p-4 shadow-md fixed top-0 inset-x-0 z-50">
+  <div class="max-w-6xl mx-auto flex justify-between items-center">
+    <a href="{{ url_for('home') }}" class="text-xl font-bold">🏰 Homzye</a>
+
+    <!-- Navigation -->
+    <nav class="flex items-center space-x-4">
+      {% if current_user.is_authenticated %}
+        <!-- Dropdown Button -->
+        <div class="relative">
+          <button @click="dropdownOpen = !dropdownOpen" class="text-beige focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div x-show="dropdownOpen" @click.away="dropdownOpen = false" x-transition
+               class="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md z-50">
+            <a href="{{ url_for('home') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">🏠 Home</a>
+            <a href="{{ url_for('wishlist') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">❤️ Wishlist</a>
+            <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">📋 Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-red-600 hover:bg-red-100">🚪 Logout</a>
+          </div>
+        </div>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="underline hover:text-yellow-300">Login</a>
+        <a href="{{ url_for('register') }}" class="underline hover:text-yellow-300">Register</a>
+      {% endif %}
+
+      <!-- Filter Button -->
+      <button @click="filterOpen = true"
+        class="ml-4 flex items-center gap-1 px-3 py-1.5 border border-beige text-beige rounded-md hover:bg-beige hover:text-charcoal transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 12v6a1 1 0 01-1.447.894l-4-2A1 1 0 019 16v-4L3.293 6.707A1 1 0 013 6V4z" />
+        </svg>
+        <span class="text-sm font-medium">Advanced Filter</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Slide-in Filter Panel -->
+<!-- Slide-in Filter Panel -->
+<div x-show="filterOpen"
+     x-transition:enter="transition transform duration-300"
+     x-transition:enter-start="-translate-x-full"
+     x-transition:enter-end="translate-x-0"
+     x-transition:leave="transition transform duration-300"
+     x-transition:leave-start="translate-x-0"
+     x-transition:leave-end="-translate-x-full"
+     class="fixed top-0 left-0 h-full w-80 bg-white shadow-lg z-50 p-6"
+     @click.away="filterOpen = false"
+     >
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-lg font-semibold">Advanced Filters</h2>
+    <button @click="filterOpen = false" class="text-gray-600 hover:text-red-500 text-2xl">&times;</button>
+  </div>
+  <form method="GET" action="{{ url_for('home') }}">
+    <div class="mb-4">
+      <label for="min_price" class="block text-sm font-medium text-gray-700">Min Price</label>
+      <input type="number" name="min_price" id="min_price"
+             class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+    </div>
+    <div class="mb-4">
+      <label for="max_price" class="block text-sm font-medium text-gray-700">Max Price</label>
+      <input type="number" name="max_price" id="max_price"
+             class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+    </div>
+    <div class="mb-4">
+      <label class="inline-flex items-center">
+        <input type="checkbox" name="has_photos" class="form-checkbox">
+        <span class="ml-2">Only show listings with photos</span>
+      </label>
+    </div>
+    <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+      Apply Filters
+    </button>
+  </form>
+</div>
+
+
+<!-- Page Content -->
+<main class="pt-24 p-4 max-w-6xl mx-auto">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="space-y-2">
+        {% for category, msg in messages %}
+          <div class="px-4 py-2 rounded shadow bg-{{ 'red' if category == 'danger' else 'green' }}-100 text-{{ 'red' if category == 'danger' else 'green' }}-800">
+            {{ msg }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="bg-charcoal text-beige mt-16">
+  <div class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+    <div>
+      <h2 class="text-lg font-semibold mb-2">🏰 Homzye</h2>
+      <p class="text-sm text-gray-400">Luxury Room Rentals made easy. Find PGs, Hostels, Apartments in top locations.</p>
+    </div>
+    <div>
+      <h3 class="text-md font-semibold mb-2">Quick Links</h3>
+      <ul class="space-y-1 text-sm">
+        <li><a href="{{ url_for('home') }}" class="hover:underline">Home</a></li>
+        <li><a href="{{ url_for('login') }}" class="hover:underline">Login</a></li>
+        <li><a href="{{ url_for('register') }}" class="hover:underline">Register</a></li>
+        {% if current_user.is_authenticated %}
+          <li><a href="{{ url_for('dashboard') }}" class="hover:underline">Dashboard</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-md font-semibold mb-2">Contact</h3>
+      <p class="text-sm text-gray-400">Email: support@homzye.com</p>
+      <p class="text-sm text-gray-400">Phone: +91-9876543210</p>
+    </div>
+    <div>
+      <h3 class="text-md font-semibold mb-2">Follow Us</h3>
+      <div class="flex space-x-4">
+        <a href="#" class="hover:text-yellow-400">Facebook</a>
+        <a href="#" class="hover:text-yellow-400">Twitter</a>
+        <a href="#" class="hover:text-yellow-400">Instagram</a>
+      </div>
+    </div>
+  </div>
+  <div class="text-center py-4 text-sm text-gray-500 border-t border-gray-600">
+    &copy; {{ year }} Homzye. All rights reserved.
+  </div>
+</footer>
+{% block scripts %}
+{% endblock %}
+
+</body>
+</html>

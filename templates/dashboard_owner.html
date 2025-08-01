@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Owner Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold text-center text-gray-900 mb-6">🏠 Your Properties</h2>
+
+<div class="text-right mb-4">
+  <a href="{{ url_for('add_property') }}"
+     class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow">
+    ➕ Add New Property
+  </a>
+</div>
+
+{% set props = current_user.properties %}
+<div class="bg-white rounded shadow p-4">
+  {% if props %}
+    <ul class="divide-y divide-gray-200">
+      {% for prop in props %}
+        <li class="py-4">
+          <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+            <div>
+              <strong class="text-lg text-gray-800">{{ prop.title }}</strong>
+              <p class="text-sm text-gray-600">{{ prop.location }}</p>
+            </div>
+            <div class="mt-2 md:mt-0 text-green-700 font-bold">
+              ₹ {{ prop.price }}
+
+            </div>
+            <a href="{{ url_for('edit_property', property_id=prop.id) }}"
+                 class="bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded">
+                ✏️ Edit
+              </a>
+
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-600">You have no properties yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+<!-- templates/book_property.html -->
+{% extends "base.html" %}
+{% block title %}Book {{ room.title }}{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto p-6">
+  <!-- Room Detail Section -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div>
+      <img src="{{ url_for('static', filename='uploads/' ~ room.photo_filename) }}" 
+           alt="{{ room.title }}" 
+           class="rounded-2xl w-full h-64 object-cover shadow-md">
+    </div>
+    <div>
+      <h2 class="text-3xl font-bold mb-2">{{ room.title }}</h2>
+      <p class="text-gray-700 mb-1"><strong>Location:</strong> {{ room.location }}</p>
+      <p class="text-gray-700 mb-1"><strong>Price per night:</strong> ₹{{ room.price }}</p>
+      <p class="text-gray-700 mb-3"><strong>Description:</strong> {{ room.description }}</p>
+    </div>
+  </div>
+
+  <!-- Booking Form -->
+  <div class="bg-white p-6 rounded-2xl shadow-xl">
+    <h3 class="text-xl font-semibold mb-4">Book Now</h3>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="mb-4">
+        {{ form.check_in.label(class="block font-medium") }}
+        {{ form.check_in(class="w-full border rounded px-3 py-2") }}
+      </div>
+      <div class="mb-4">
+        {{ form.check_out.label(class="block font-medium") }}
+        {{ form.check_out(class="w-full border rounded px-3 py-2") }}
+      </div>
+      <div class="mb-4">
+        {{ form.guests.label(class="block font-medium") }}
+        {{ form.guests(class="w-full border rounded px-3 py-2") }}
+      </div>
+      <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600">
+        {{ form.submit.label.text }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Mock Payment Section -->
+  <div class="mt-8">
+    <h3 class="text-xl font-semibold mb-3">Payment Options</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div class="border rounded-xl p-4 flex items-center space-x-4 shadow-sm">
+        <img src="{{ url_for('static', filename='images/payment/upi.png') }}" class="w-10 h-10" alt="UPI">
+        <span>UPI</span>
+      </div>
+      <div class="border rounded-xl p-4 flex items-center space-x-4 shadow-sm">
+        <img src="{{ url_for('static', filename='images/payment/paytm.png') }}" class="w-10 h-10" alt="Paytm">
+        <span>Paytm</span>
+      </div>
+      <div class="border rounded-xl p-4 flex items-center space-x-4 shadow-sm">
+        <img src="{{ url_for('static', filename='images/payment/card.png') }}" class="w-10 h-10" alt="Card">
+        <span>Debit/Credit Card</span>
+      </div>
+    </div>
+    <p class="text-sm text-gray-500 mt-3">* Payment integration coming soon. Booking now is free.</p>
+  </div>
+
+  <a href="{{ url_for('home') }}" class="mt-8 inline-block text-blue-600 hover:underline">← Back to Home</a>
+</div>
+{% endblock %}

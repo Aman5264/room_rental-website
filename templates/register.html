@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold text-center text-gray-900 mb-6">📝 Register</h2>
+
+<form method="POST" class="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+  {{ form.hidden_tag() }}
+
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+    {{ form.username(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700") }}
+  </div>
+
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+    {{ form.email(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700") }}
+  </div>
+
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">Role</label>
+    <select name="role" class="shadow border rounded w-full py-2 px-3 text-gray-700" required>
+      <option value="user">User</option>
+      <option value="owner">Owner</option>
+    </select>
+  </div>
+
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+    {{ form.password(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700") }}
+  </div>
+
+  <div class="mb-6">
+    <label class="block text-gray-700 text-sm font-bold mb-2">Confirm Password</label>
+    {{ form.confirm(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700") }}
+  </div>
+
+  <div class="flex items-center justify-between">
+    {{ form.submit(class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded") }}
+  </div>
+</form>
+{% endblock %}

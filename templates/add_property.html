@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Property{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold text-center text-gray-900 mb-6">➕ Add New Property</h2>
+
+<form method="POST" enctype="multipart/form-data" novalidate class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-lg mx-auto">
+
+  {{ form.hidden_tag() }}
+
+  <div class="mb-4">
+    {{ form.title.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+    {{ form.title(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+  </div>
+
+  <div class="mb-4">
+    {{ form.description.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+    {{ form.description(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+  </div>
+
+  <div class="mb-4">
+    {{ form.location.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+    {{ form.location(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+  </div>
+
+  <div class="mb-4">
+    {{ form.latitude.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+    {{ form.latitude(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder="e.g., 25.3176") }}
+  </div>
+
+  <div class="mb-4">
+    {{ form.longitude.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+    {{ form.longitude(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder="e.g., 82.9739") }}
+  </div>
+
+  <div class="mb-4">
+    {{ form.price.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+    {{ form.price(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+    <p class="text-xs text-gray-600 mt-1">Preview: ₹<span id="pricePreview">0</span></p>
+  </div>
+
+  <div class="mb-4">
+    {{ form.photos.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+    {{ form.photos(class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300", multiple=true) }}
+    <p class="text-xs text-gray-600 mt-1">You can upload multiple images (JPG, PNG).</p>
+  </div>
+
+  <div id="imagePreview" class="grid grid-cols-3 gap-2 mt-2"></div>
+
+  <div class="flex items-center justify-between mt-4">
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+      Add Property
+    </button>
+  </div>
+</form>
+
+<script>
+  // Price preview
+  document.querySelector('input[name="price"]').addEventListener('input', function () {
+    const val = parseFloat(this.value);
+    document.getElementById('pricePreview').innerText = isNaN(val) ? 0 : val.toLocaleString();
+  });
+
+  // Image preview
+  document.querySelector('input[name="photos"]').addEventListener('change', function () {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    Array.from(this.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'w-full h-24 object-cover rounded shadow';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
+{% endblock %}

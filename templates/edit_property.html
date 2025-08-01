@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Edit Property{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Edit Property</h1>
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-4">
+        {{ form.title.label(class="block font-medium text-gray-700") }}
+        {{ form.title(class_="input w-full border rounded px-3 py-2") }}
+    </div>
+
+    <div class="mb-4">
+        {{ form.description.label(class="block font-medium text-gray-700") }}
+        {{ form.description(class_="input w-full border rounded px-3 py-2") }}
+    </div>
+
+    <div class="mb-4">
+        {{ form.location.label(class="block font-medium text-gray-700") }}
+        {{ form.location(class_="input w-full border rounded px-3 py-2") }}
+    </div>
+
+    <div class="mb-4">
+        {{ form.price.label(class="block font-medium text-gray-700") }}
+        {{ form.price(class_="input w-full border rounded px-3 py-2") }}
+    </div>
+
+    <!-- Existing Photos -->
+<h2 class="text-lg font-semibold mb-2">Existing Photos</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    {% for photo in room.photos %}
+    <div class="relative border p-2 rounded shadow">
+        <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" alt="Photo" class="w-full h-32 object-cover rounded">
+        
+        <!-- Delete checkbox -->
+        <label class="absolute top-1 right-1 bg-white px-1 py-0.5 rounded shadow">
+            <input type="checkbox" name="delete_photos" value="{{ photo.id }}">
+            Delete
+        </label>
+    </div>
+    {% endfor %}
+</div>
+
+
+    <div class="mb-4">
+        {{ form.photos.label(class="block font-medium text-gray-700") }}
+        {{ form.photos(class_="input w-full text-gray-700 file:bg-blue-100 file:py-2 file:px-4 file:border file:rounded file:border-blue-300") }}
+    </div>
+
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
+        Update Property
+    </button>
+</form>
+{% endblock %}
