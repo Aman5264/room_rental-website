@@ -22,7 +22,7 @@ from wtforms.validators import DataRequired, NumberRange
 # App setup
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.config['GOOGLE_MAPS_API_KEY'] = 'AIzaSyBHdS5vostOjd90NqF6RlRf012s3se2ryo'
+#app.config['GOOGLE_MAPS_API_KEY'] = '***'
 app.config['SECRET_KEY'] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 
